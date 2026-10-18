@@ -22,10 +22,12 @@ private:
 
 	std::vector<Element*> map;
 
+	// Получает индекс ячейки по хешу.
 	static int calcIndexByHash(int hash, int mapSize) {
 		return hash % mapSize;
 	}
 
+	// Переносит элементы в таблицу нового размера.
 	static std::vector<Element*> rehash(std::vector<Element*>& oldMap, int newSize) {
 		std::vector<Element*> newMap;
 		newMap.resize(newSize);
@@ -39,7 +41,7 @@ private:
 		return newMap;
 	}
 
-
+	// Добавляет элемент или заменяет элемент с таким же ключом.
 	static int insertInner(std::vector<Element*>& hashMap, Element* el) {
 		if (hashMap.empty()) {
 			hashMap.resize(100, nullptr);
@@ -76,6 +78,7 @@ private:
 		return insertInner(hashMap, el);
 	}
 	
+	// Ищет и удаляет элемент по ключу.
 	static int removeInner(std::vector<Element*>& hashMap, std::string key, int depth) {
 		if (depth >= hashMap.size()) {
 			throw std::runtime_error("No key!!!");
@@ -96,6 +99,7 @@ private:
 		return removeInner(hashMap, key, depth + 1);
 	}
 
+	// Вычисляет хеш, складывая части ключа по три цифры.
 	static int hash(std::string key) {
 		int result = 0;
 		std::cout << "Key: " << key << std::endl;
@@ -109,12 +113,14 @@ private:
 	}
 
 public:
+	// Освобождает память всех элементов таблицы.
 	~HashMap() {
 		for (auto& el : map) {
 			delete el;
 		}
 	}
 
+	// Возвращает значение по ключу.
 	std::string get(std::string key) {
 		if (map.empty()) {
 			throw std::runtime_error("No key!!!");
@@ -132,15 +138,18 @@ public:
 		throw std::runtime_error("No key!!!");
 	}
 
+	// Создаёт элемент и добавляет его в таблицу.
 	void set(std::string key, std::string value) {
 		Element* el = new Element{ key, value };
 		insertInner(map, el);
 	}
 
+	// Вызывает удаление элемента по ключу.
 	void remove(std::string key) {
 		removeInner(map, key, 0);
 	}
 
+	// Выводит все элементы таблицы.
 	void print() {
 		for (auto& el : map) {
 			if (el != nullptr) {
@@ -150,6 +159,7 @@ public:
 	}
 };
 
+// Читает пары ключ:значение из потока через точку с запятой.
 void readHashmap(std::istream& stream, HashMap& map) {
 	std::string substr;
 	while (std::getline(stream, substr, ';')) {
